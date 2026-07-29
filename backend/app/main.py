@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.routes.chat import router as chat_router
@@ -6,10 +7,38 @@ from app.routes.chat import router as chat_router
 
 app = FastAPI(
     title="NUTU API",
-    description="Personal AI Assistant for Mohammed Yassin",
+    description="Backend API for NUTU Personal AI Assistant",
     version="1.0.0"
 )
 
+
+# -----------------------------------------
+# CORS
+# -----------------------------------------
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+# -----------------------------------------
+# Chat Router
+# -----------------------------------------
+
+app.include_router(chat_router)
+
+
+# -----------------------------------------
+# Static Files
+# Resume PDF
+# -----------------------------------------
 
 app.mount(
     "/static",
@@ -18,19 +47,12 @@ app.mount(
 )
 
 
-app.include_router(chat_router)
-
+# -----------------------------------------
+# Root
+# -----------------------------------------
 
 @app.get("/")
 def root():
     return {
-        "message": "Welcome to NUTU API"
-    }
-
-
-@app.get("/health")
-def health_check():
-    return {
-        "status": "healthy",
-        "service": "NUTU Backend"
+        "message": "NUTU API is running"
     }
