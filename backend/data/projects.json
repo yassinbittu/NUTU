@@ -1,0 +1,75 @@
+{
+  "projects": [
+    {
+      "name": "NUTU",
+      "type": "Personal RAG AI Assistant",
+      "status": "In Development",
+      "technologies": [
+        "Python",
+        "FastAPI",
+        "React.js",
+        "RAG",
+        "LLMs",
+        "Sentence Transformers",
+        "Embeddings",
+        "Vector Database",
+        "Speech-to-Text",
+        "Text-to-Speech"
+      ],
+      "description": "NUTU is a personal AI assistant designed to answer questions about Mohammed Yassin's professional background. It uses Retrieval-Augmented Generation to retrieve relevant information from Yassin's professional knowledge base and generate natural AI responses. NUTU is being designed to support both text chat and voice conversations."
+    },
+    {
+      "name": "ResumeShort AI",
+      "type": "AI Resume Screening Platform",
+      "technologies": [
+        "FastAPI",
+        "React.js",
+        "PostgreSQL",
+        "JWT Authentication",
+        "Grok LLM",
+        "Sentence Transformers",
+        "OCR"
+      ],
+      "description": "Built a multi-tenant AI-powered resume screening platform for resume parsing, semantic matching, ATS scoring and automated candidate shortlisting."
+    },
+    {
+      "name": "Resume AI",
+      "type": "AI Resume Optimization Platform",
+      "technologies": [
+        "FastAPI",
+        "PostgreSQL",
+        "SQLAlchemy",
+        "JWT Authentication",
+        "Grok LLM",
+        "Prompt Engineering",
+        "Sentence Transformers"
+      ],
+      "description": "Developed an AI-powered resume optimization platform that optimizes resumes based on job descriptions while improving ATS compatibility."
+    },
+    {
+      "name": "Diabetes Prediction System",
+      "type": "Machine Learning Application",
+      "technologies": [
+        "Python",
+        "Random Forest",
+        "Flask",
+        "OCR",
+        "Tesseract"
+      ],
+      "description": "Developed a diabetes prediction system that analyzes patient health data and predicts diabetes risk. Integrated OCR to automatically extract medical report data."
+    },
+    {
+      "name": "Full Stack E-Commerce Website",
+      "type": "Full Stack Web Application",
+      "technologies": [
+        "React.js",
+        "Flask",
+        "PostgreSQL",
+        "Vercel",
+        "Render",
+        "Supabase"
+      ],
+      "description": "Developed a full-stack e-commerce platform with responsive UI, REST API integration and Git-based deployment workflows."
+    }
+  ]
+}

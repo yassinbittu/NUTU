@@ -1,0 +1,20 @@
+{
+  "certifications": [
+    {
+      "name": "AWS Cloud Practitioner Essentials",
+      "provider": "AWS"
+    },
+    {
+      "name": "Databricks Fundamentals",
+      "provider": "Databricks"
+    },
+    {
+      "name": "SQL",
+      "provider": "HackerRank"
+    },
+    {
+      "name": "Data Analytics Job Simulation",
+      "provider": "Deloitte Forage"
+    }
+  ]
+}

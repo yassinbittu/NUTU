@@ -1,0 +1,17 @@
+{
+  "experience": [
+    {
+      "company": "Encatch Tech Services",
+      "location": "Hyderabad",
+      "role": "Software Engineer Intern",
+      "start_date": "June 2025",
+      "end_date": "June 2026",
+      "responsibilities": [
+        "Developed reusable React.js components for enterprise web applications and integrated REST APIs.",
+        "Collaborated with backend developers, UI/UX designers and QA teams following Agile Scrum methodology.",
+        "Worked with Git, SDLC practices, debugging, testing and production issue resolution.",
+        "Contributed to DineEase and Academy Flow projects, improving application stability and maintainability."
+      ]
+    }
+  ]
+}

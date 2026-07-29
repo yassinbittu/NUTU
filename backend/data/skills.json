@@ -1,0 +1,52 @@
+{
+  "skills": {
+    "languages": [
+      "Python",
+      "JavaScript (ES6+)",
+      "SQL"
+    ],
+    "frontend": [
+      "React.js",
+      "HTML5",
+      "CSS3",
+      "Tailwind CSS"
+    ],
+    "backend": [
+      "FastAPI",
+      "Flask",
+      "Node.js",
+      "Express.js",
+      "REST APIs",
+      "JWT Authentication",
+      "SQLAlchemy"
+    ],
+    "ai_ml": [
+      "LLMs",
+      "RAG",
+      "Prompt Engineering",
+      "NLP",
+      "OCR (Tesseract)",
+      "Sentence Transformers",
+      "Embeddings",
+      "Semantic Search",
+      "ATS Scoring"
+    ],
+    "databases": [
+      "PostgreSQL",
+      "MySQL"
+    ],
+    "tools_cloud": [
+      "Git",
+      "GitHub",
+      "Docker",
+      "Postman",
+      "Swagger",
+      "Jira",
+      "GitHub Actions",
+      "AWS Basics",
+      "Vercel",
+      "Render",
+      "Supabase"
+    ]
+  }
+}

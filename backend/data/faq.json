@@ -1,0 +1,64 @@
+{
+  "faqs": [
+    {
+      "question": "Who is Yassin Mohammed?",
+      "answer": "Yassin Mohammed is a Computer Science Engineering graduate and Python Full Stack Developer with experience in full-stack development and AI-powered applications."
+    },
+    {
+      "question": "Where is Yassin from?",
+      "answer": "Yassin is from Warangal, India."
+    },
+    {
+      "question": "What are Yassin's main technical skills?",
+      "answer": "Yassin works with Python, JavaScript, SQL, React.js, FastAPI, Flask, Node.js, Express.js, PostgreSQL and MySQL. His AI skills include LLMs, RAG, Prompt Engineering, NLP, OCR, Sentence Transformers, Embeddings and Semantic Search."
+    },
+    {
+      "question": "Does Yassin have experience with AI?",
+      "answer": "Yes. Yassin has experience with LLMs, RAG, Prompt Engineering, NLP, OCR, Sentence Transformers, Embeddings and Semantic Search and has developed multiple AI-powered projects."
+    },
+    {
+      "question": "What AI projects has Yassin developed?",
+      "answer": "Yassin has worked on AI projects including NUTU, ResumeShort AI, Resume AI and a Machine Learning based Diabetes Prediction System."
+    },
+    {
+      "question": "What is NUTU?",
+      "answer": "NUTU is a personal RAG-based AI assistant being developed by Yassin. It allows people to ask questions about Yassin's professional background through text chat and voice conversations."
+    },
+    {
+      "question": "Does Yassin know FastAPI?",
+      "answer": "Yes. Yassin has experience with FastAPI and has used it for AI-powered backend applications including ResumeShort AI and Resume AI."
+    },
+    {
+      "question": "Does Yassin know React?",
+      "answer": "Yes. Yassin has experience developing reusable React.js components and has used React.js in full-stack projects."
+    },
+    {
+      "question": "Where did Yassin complete his B.Tech?",
+      "answer": "Yassin completed his B.Tech in Computer Science Engineering with an IoT specialization from Kakatiya Institute of Technology and Science, Warangal."
+    },
+    {
+      "question": "Where did Yassin complete his Intermediate?",
+      "answer": "Yassin completed his Intermediate in MPC from Resonance IIT Junior College, Warangal."
+    },
+    {
+      "question": "Where did Yassin complete his schooling?",
+      "answer": "Yassin completed his school education at Oxford High School, Warangal."
+    },
+    {
+      "question": "What professional experience does Yassin have?",
+      "answer": "Yassin worked at Encatch Tech Services in Hyderabad as a Software Engineer Intern, where he worked with React.js, REST APIs, Git, Agile Scrum, debugging and production application development."
+    },
+    {
+      "question": "What databases does Yassin know?",
+      "answer": "Yassin has experience with PostgreSQL and MySQL."
+    },
+    {
+      "question": "What cloud and development tools does Yassin know?",
+      "answer": "Yassin has worked with Git, GitHub, Docker, Postman, Swagger, Jira, GitHub Actions, AWS basics, Vercel, Render and Supabase."
+    },
+    {
+      "question": "What certifications does Yassin have?",
+      "answer": "Yassin has completed AWS Cloud Practitioner Essentials, Databricks Fundamentals, HackerRank SQL and Deloitte Data Analytics through Forage."
+    }
+  ]
+}

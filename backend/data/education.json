@@ -1,0 +1,26 @@
+{
+  "education": [
+    {
+      "institution": "Kakatiya Institute of Technology and Science",
+      "location": "Warangal",
+      "degree": "B.Tech",
+      "field": "Computer Science Engineering (IoT)",
+      "start_date": "November 2021",
+      "end_date": "May 2025"
+    },
+    {
+      "institution": "Resonance IIT Junior College",
+      "location": "Warangal",
+      "qualification": "Intermediate",
+      "stream": "MPC",
+      "start_date": "June 2019",
+      "end_date": "March 2021"
+    },
+    {
+      "institution": "Oxford High School",
+      "location": "Warangal",
+      "qualification": "School Education",
+      "end_date": "March 2019"
+    }
+  ]
+}
