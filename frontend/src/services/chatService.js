@@ -42,3 +42,4 @@ export const getFileUrl = (url) => {
 
   return `${API_BASE_URL}${url}`;
 };
+

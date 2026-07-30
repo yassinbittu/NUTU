@@ -106,7 +106,34 @@ class IntentService:
 
 
         # --------------------------------
-        # 2. Greeting detection
+        # 2. Farewell detection
+        # --------------------------------
+
+        farewell_words = [
+            "bye",
+            "bye bye",
+            "goodbye",
+            "good bye",
+            "see you",
+            "see you later",
+            "take care",
+            "catch you later"
+        ]
+
+        has_farewell = any(
+            re.search(
+                rf"\b{re.escape(farewell)}\b",
+                message
+            )
+            for farewell in farewell_words
+        )
+
+        if has_farewell:
+            return "farewell"
+
+
+        # --------------------------------
+        # 3. Greeting detection
         # --------------------------------
 
         greeting_words = [
@@ -135,7 +162,7 @@ class IntentService:
 
 
         # --------------------------------
-        # 3. Greeting + another message
+        # 4. Greeting + another message
         # --------------------------------
 
         if has_greeting:
@@ -185,7 +212,7 @@ class IntentService:
 
 
         # --------------------------------
-        # 4. Normal message
+        # 5. Normal message
         # --------------------------------
 
         return self.classify_with_llm(

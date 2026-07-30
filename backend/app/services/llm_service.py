@@ -112,6 +112,56 @@ class LLMService:
 
 
     # -------------------------------------------------
+    # 3. FAREWELL
+    # Groq only - NO RAG
+    # -------------------------------------------------
+
+    def generate_farewell(
+        self,
+        message: str
+    ) -> str:
+
+        response = self.client.chat.completions.create(
+            model=self.model,
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "You are NUTU, the personal AI assistant "
+                        "for Mohammed Yassin. "
+
+                        "The user is ending the conversation. "
+                        "Respond naturally, warmly, and briefly, "
+                        "like a real conversational assistant. "
+
+                        "Do not redirect the user to ask about Yassin. "
+                        "Do not provide Yassin's professional information. "
+                        "Do not mention that you are designed only to "
+                        "answer questions about Yassin. "
+
+                        "Keep the response to one or two short sentences. "
+                        "Vary your response naturally instead of using "
+                        "the exact same goodbye every time. "
+
+                        "Examples of the style: "
+                        "'Bye! Take care and have a great day!' "
+                        "'See you later! It was nice chatting with you.' "
+                        "'Goodbye! Have a good one!'"
+                    )
+                },
+                {
+                    "role": "user",
+                    "content": message
+                }
+            ],
+            temperature=0.7,
+            max_tokens=60
+        )
+
+        return response.choices[0].message.content
+
+
+    # -------------------------------------------------
     # 3. UNRELATED QUESTIONS
     # Groq only - NO RAG
     # -------------------------------------------------

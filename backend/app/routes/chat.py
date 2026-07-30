@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from app.services.rag_service import rag_service
 from app.services.llm_service import llm_service
 from app.services.intent_service import intent_service
+from app.services.name_service import name_service
 
 
 router = APIRouter(
@@ -37,6 +38,7 @@ class ChatResponse(BaseModel):
 @router.post("", response_model=ChatResponse)
 def chat(request: ChatRequest):
 
+    # Original user message
     message = request.message.strip()
 
 
@@ -53,25 +55,52 @@ def chat(request: ChatRequest):
 
 
     # -------------------------------------------------
-    # 2. DETECT INTENT
+    # 2. NORMALIZE YASSIN'S NAME
+    # Yaseen / Yasin / Yassine etc. -> Mohammed Yassin
     # -------------------------------------------------
 
-    intent = intent_service.detect_intent(
+    normalized_message = (
+        name_service.normalize_yassin_name(
+            message
+        )
+    )
+
+    print(
+        "Original message:",
         message
     )
 
-    print(f"Detected intent: {intent}")
+    print(
+        "Normalized message:",
+        normalized_message
+    )
 
 
     # -------------------------------------------------
-    # 3. GREETING
+    # 3. DETECT INTENT
+    # IMPORTANT: use normalized message
+    # -------------------------------------------------
+
+    intent = intent_service.detect_intent(
+        normalized_message
+    )
+
+    print(
+        f"Detected intent: {intent}"
+    )
+
+    
+
+
+    # -------------------------------------------------
+    # 4. GREETING
     # Groq only - NO RAG
     # -------------------------------------------------
 
     if intent == "greeting":
 
         answer = llm_service.generate_greeting(
-            message=message
+            message=normalized_message
         )
 
         return ChatResponse(
@@ -81,7 +110,24 @@ def chat(request: ChatRequest):
 
 
     # -------------------------------------------------
-    # 4. RESUME REQUEST
+    # 5. FAREWELL
+    # Groq only - NO RAG
+    # -------------------------------------------------
+
+    if intent == "farewell":
+
+        answer = llm_service.generate_farewell(
+            message=normalized_message
+        )
+
+        return ChatResponse(
+            answer=answer,
+            type="farewell"
+        )
+
+
+    # -------------------------------------------------
+    # 6. RESUME REQUEST
     # Direct PDF - NO RAG / NO Groq
     # -------------------------------------------------
 
@@ -105,14 +151,14 @@ def chat(request: ChatRequest):
 
 
     # -------------------------------------------------
-    # 5. UNRELATED QUESTION
+    # 6. UNRELATED QUESTION
     # Short Groq redirect - NO RAG
     # -------------------------------------------------
 
     if intent == "unrelated":
 
         answer = llm_service.generate_redirect(
-            message=message
+            message=normalized_message
         )
 
         return ChatResponse(
@@ -122,17 +168,19 @@ def chat(request: ChatRequest):
 
 
     # -------------------------------------------------
-    # 6. QUESTION ABOUT YASSIN
+    # 7. QUESTION ABOUT YASSIN
     # RAG -> ChromaDB -> Groq
     # -------------------------------------------------
 
     if intent == "yassin_question":
 
-        # Retrieve relevant knowledge
+        # IMPORTANT:
+        # Search using normalized message
         results = rag_service.search(
-            query=message,
+            query=normalized_message,
             top_k=4
         )
+
 
         # Combine retrieved chunks
         context = "\n\n---\n\n".join(
@@ -140,11 +188,15 @@ def chat(request: ChatRequest):
             for result in results
         )
 
+
         # Generate natural answer
+        # IMPORTANT:
+        # Send normalized question to Groq
         answer = llm_service.generate_answer(
-            question=message,
+            question=normalized_message,
             context=context
         )
+
 
         return ChatResponse(
             answer=answer,
@@ -153,7 +205,7 @@ def chat(request: ChatRequest):
 
 
     # -------------------------------------------------
-    # 7. FALLBACK
+    # 8. FALLBACK
     # -------------------------------------------------
 
     return ChatResponse(
