@@ -1,3 +1,5 @@
+import traceback
+
 from fastapi import APIRouter
 from pydantic import BaseModel
 
@@ -262,11 +264,18 @@ def chat(request: ChatRequest):
                     "iamyassin25@gmail.com. Thank you!"
                 )
             except Exception as exc:
+
+                traceback.print_exc()
+
+                
+
+                print("Email send failure:", str(exc))
+
                 answer = (
                     "I was not able to send the email right now. "
                     "Please try again later."
                 )
-                print("Email send failure:", repr(exc))
+                
 
             contact_service.reset()
 
