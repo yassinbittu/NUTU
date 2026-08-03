@@ -1,9 +1,14 @@
+// ---------------------------------------------
+// CREATE SPEECH RECOGNITION
+// ---------------------------------------------
+
 export const createSpeechRecognition = () => {
   const SpeechRecognition =
     window.SpeechRecognition ||
     window.webkitSpeechRecognition;
 
   if (!SpeechRecognition) {
+    console.error("Speech Recognition is not supported.");
     return null;
   }
 
@@ -11,12 +16,28 @@ export const createSpeechRecognition = () => {
 
   recognition.continuous = false;
   recognition.interimResults = false;
-
-  // English only
   recognition.lang = "en-IN";
+  recognition.maxAlternatives = 1;
 
   return recognition;
 };
+
+
+// ---------------------------------------------
+// LOAD VOICES
+// ---------------------------------------------
+
+let voices = [];
+
+const loadVoices = () => {
+  voices = window.speechSynthesis.getVoices();
+};
+
+loadVoices();
+
+if ("speechSynthesis" in window) {
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+}
 
 
 // ---------------------------------------------
@@ -27,56 +48,106 @@ export const speakText = (
   text,
   onEnd = null
 ) => {
-  if (!window.speechSynthesis) {
-    console.error(
-      "Speech synthesis is not supported."
-    );
+
+  if (!("speechSynthesis" in window)) {
+    console.error("Speech synthesis not supported.");
     return;
   }
 
-  // Stop previous speech
-  window.speechSynthesis.cancel();
+  if (!text) return;
 
-  const speech =
-    new SpeechSynthesisUtterance(text);
+  const speak = () => {
 
-  speech.lang = "en-IN";
-  speech.rate = 1;
-  speech.pitch = 1;
-  speech.volume = 1;
+    // Stop previous speech
+    window.speechSynthesis.cancel();
 
+    const utterance =
+      new SpeechSynthesisUtterance(text);
 
-  speech.onstart = () => {
-    console.log(
-      "NUTU started speaking"
-    );
-  };
+    // Voice settings
+    utterance.lang = "en-US";
+    utterance.rate = 1;
+    utterance.pitch = 1;
+    utterance.volume = 1;
 
+    // Try English India first
+    let selectedVoice =
+      voices.find(
+        voice => voice.lang === "en-IN"
+      );
 
-  speech.onend = () => {
-    console.log(
-      "NUTU finished speaking"
-    );
-
-    if (onEnd) {
-      onEnd();
+    // Otherwise English US
+    if (!selectedVoice) {
+      selectedVoice =
+        voices.find(
+          voice => voice.lang.startsWith("en-US")
+        );
     }
-  };
 
-
-  speech.onerror = (event) => {
-    console.error(
-      "NUTU speech error:",
-      event.error
-    );
-
-    if (onEnd) {
-      onEnd();
+    // Otherwise any English
+    if (!selectedVoice) {
+      selectedVoice =
+        voices.find(
+          voice => voice.lang.startsWith("en")
+        );
     }
+
+    // Otherwise first available
+    if (!selectedVoice && voices.length > 0) {
+      selectedVoice = voices[0];
+    }
+
+    if (selectedVoice) {
+      utterance.voice = selectedVoice;
+    }
+
+    utterance.onstart = () => {
+      console.log("NUTU started speaking");
+    };
+
+    utterance.onend = () => {
+      console.log("NUTU finished speaking");
+
+      if (onEnd) {
+        onEnd();
+      }
+    };
+
+    utterance.onerror = (event) => {
+      console.error(
+        "Speech Error:",
+        event.error
+      );
+
+      if (onEnd) {
+        onEnd();
+      }
+    };
+
+    window.speechSynthesis.speak(
+      utterance
+    );
   };
 
+  // Mobile browsers load voices asynchronously
+  if (
+    window.speechSynthesis.getVoices().length === 0
+  ) {
 
-  window.speechSynthesis.speak(speech);
+    window.speechSynthesis.onvoiceschanged = () => {
+
+      loadVoices();
+
+      speak();
+    };
+
+  } else {
+
+    loadVoices();
+
+    speak();
+  }
+
 };
 
 
@@ -85,7 +156,61 @@ export const speakText = (
 // ---------------------------------------------
 
 export const stopSpeaking = () => {
-  if (window.speechSynthesis) {
+
+  if ("speechSynthesis" in window) {
+
     window.speechSynthesis.cancel();
+
   }
+
+};
+
+
+// ---------------------------------------------
+// UNLOCK SPEECH (Mobile)
+// Call once when app starts
+// ---------------------------------------------
+
+export const unlockSpeech = () => {
+
+  if (!("speechSynthesis" in window)) {
+    return;
+  }
+
+  const unlock = () => {
+
+    const utterance =
+      new SpeechSynthesisUtterance("");
+
+    window.speechSynthesis.speak(
+      utterance
+    );
+
+    document.removeEventListener(
+      "click",
+      unlock
+    );
+
+    document.removeEventListener(
+      "touchstart",
+      unlock
+    );
+  };
+
+  document.addEventListener(
+    "click",
+    unlock,
+    {
+      once: true
+    }
+  );
+
+  document.addEventListener(
+    "touchstart",
+    unlock,
+    {
+      once: true
+    }
+  );
+
 };
