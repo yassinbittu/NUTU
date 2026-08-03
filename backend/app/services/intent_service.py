@@ -15,10 +15,14 @@ class IntentService:
         self.model = settings.GROQ_MODEL
 
 
-    # -------------------------------------------------
+    # =================================================
     # LLM CLASSIFIER
-    # Decides: yassin_question OR unrelated
-    # -------------------------------------------------
+    # =================================================
+    # Decides:
+    # yassin_question
+    # contact_yassin
+    # unrelated
+    # =================================================
 
     def classify_with_llm(
         self,
@@ -37,20 +41,70 @@ class IntentService:
                         "Classify the user's message into exactly ONE "
                         "of these categories:\n\n"
 
+                        # -----------------------------
+                        # YASSIN QUESTION
+                        # -----------------------------
+
                         "yassin_question - if the user is asking about "
                         "Yassin, his skills, education, experience, "
                         "projects, certifications, background, career, "
-                        "technologies, or anything related to him.\n\n"
+                        "technologies, location, date of birth, "
+                        "contact information, professional profile, "
+                        "or anything related to him.\n\n"
+
+                        # -----------------------------
+                        # CONTACT YASSIN
+                        # -----------------------------
+
+                        "contact_yassin - if the user wants to contact, "
+                        "message, email, recruit, hire, interview, "
+                        "schedule a meeting with, send an opportunity to, "
+                        "or personally communicate with Yassin.\n\n"
+
+                        "Examples of contact_yassin:\n"
+                        "'I want to contact Yassin'\n"
+                        "'Can you send Yassin an email?'\n"
+                        "'I want to send him a message'\n"
+                        "'I have a job opportunity for Yassin'\n"
+                        "'I want to hire Yassin'\n"
+                        "'Can Yassin contact me?'\n"
+                        "'Tell Yassin to contact me'\n"
+                        "'I would like to interview him'\n"
+                        "'I want to schedule an interview with Yassin'\n"
+                        "'I like his profile and want to talk to him'\n"
+                        "'We have an opportunity for him'\n"
+                        "'Can I connect with Yassin?'\n\n"
+
+                        # -----------------------------
+                        # UNRELATED
+                        # -----------------------------
 
                         "unrelated - if the user is asking about something "
                         "not related to Yassin.\n\n"
 
-                        "Pronouns such as he, him, and his should refer "
-                        "to Yassin when the question appears to be about "
-                        "his professional information.\n\n"
+                        # -----------------------------
+                        # IMPORTANT RULES
+                        # -----------------------------
 
-                        "Return ONLY one of these:\n"
+                        "Pronouns such as he, him, and his should refer "
+                        "to Yassin when the message appears to be "
+                        "about Yassin.\n\n"
+
+                        "If someone expresses interest in Yassin and wants "
+                        "to communicate with him, classify it as "
+                        "contact_yassin, not yassin_question.\n\n"
+
+                        "If someone only asks for Yassin's email address "
+                        "or phone number, classify it as "
+                        "yassin_question.\n\n"
+
+                        "If someone asks NUTU to send Yassin a message "
+                        "or help them contact Yassin, classify it as "
+                        "contact_yassin.\n\n"
+
+                        "Return ONLY one of these exact values:\n"
                         "yassin_question\n"
+                        "contact_yassin\n"
                         "unrelated"
                     )
                 },
@@ -73,12 +127,15 @@ class IntentService:
         if intent == "yassin_question":
             return "yassin_question"
 
+        if intent == "contact_yassin":
+            return "contact_yassin"
+
         return "unrelated"
 
 
-    # -------------------------------------------------
+    # =================================================
     # MAIN INTENT DETECTOR
-    # -------------------------------------------------
+    # =================================================
 
     def detect_intent(
         self,
@@ -88,9 +145,9 @@ class IntentService:
         message = message.lower().strip()
 
 
-        # --------------------------------
-        # 1. Resume request
-        # --------------------------------
+        # -------------------------------------------------
+        # 1. RESUME REQUEST
+        # -------------------------------------------------
 
         resume_words = [
             "resume",
@@ -105,9 +162,9 @@ class IntentService:
             return "resume"
 
 
-        # --------------------------------
-        # 2. Farewell detection
-        # --------------------------------
+        # -------------------------------------------------
+        # 2. FAREWELL DETECTION
+        # -------------------------------------------------
 
         farewell_words = [
             "bye",
@@ -132,9 +189,9 @@ class IntentService:
             return "farewell"
 
 
-        # --------------------------------
-        # 3. Greeting detection
-        # --------------------------------
+        # -------------------------------------------------
+        # 3. GREETING DETECTION
+        # -------------------------------------------------
 
         greeting_words = [
             "hi",
@@ -161,9 +218,9 @@ class IntentService:
         )
 
 
-        # --------------------------------
-        # 4. Greeting + another message
-        # --------------------------------
+        # -------------------------------------------------
+        # 4. GREETING + ANOTHER MESSAGE
+        # -------------------------------------------------
 
         if has_greeting:
 
@@ -178,12 +235,14 @@ class IntentService:
                     remaining_message
                 )
 
-            # Remove the word NUTU
+
+            # Remove NUTU
             remaining_message = re.sub(
                 r"\bnutu\b",
                 "",
                 remaining_message
             )
+
 
             # Remove punctuation
             remaining_message = re.sub(
@@ -191,6 +250,7 @@ class IntentService:
                 " ",
                 remaining_message
             )
+
 
             # Remove extra spaces
             remaining_message = re.sub(
@@ -200,24 +260,28 @@ class IntentService:
             ).strip()
 
 
-            # Only greeting was provided
+            # Only greeting
             if not remaining_message:
                 return "greeting"
 
 
-            # Greeting + actual question/message
+            # Greeting + actual message
             return self.classify_with_llm(
                 remaining_message
             )
 
 
-        # --------------------------------
-        # 5. Normal message
-        # --------------------------------
+        # -------------------------------------------------
+        # 5. NORMAL MESSAGE
+        # -------------------------------------------------
 
         return self.classify_with_llm(
             message
         )
 
+
+# =====================================================
+# REUSABLE SERVICE INSTANCE
+# =====================================================
 
 intent_service = IntentService()

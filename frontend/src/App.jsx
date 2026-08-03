@@ -4,294 +4,104 @@ import Header from "./components/Header";
 import ChatWindow from "./components/ChatWindow";
 import ChatInput from "./components/ChatInput";
 import AppLoader from "./components/AppLoader";
-
 import { sendChatMessage } from "./services/chatService";
-
-import {
-  speakText,
-  stopSpeaking,
-} from "./services/voiceService";
+import { speakText, stopSpeaking } from "./services/voiceService";
 
 
 function App() {
-
-  // -----------------------------------------
-  // APP LOADING SCREEN
-  // -----------------------------------------
-
-  const [appLoading, setAppLoading] =
-    useState(true);
-
-
-  // -----------------------------------------
-  // CHAT MESSAGES
-  // -----------------------------------------
-
+  const [appLoading, setAppLoading] = useState(true);
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content:
-        "Hi! I'm NUTU. Ask me anything about Mohammed Yassin.",
+      content: "Hi! I'm NUTU. Ask me anything about Mohammed Yassin.",
+      action: {
+        suggestions: [
+          { label: "Show resume", message: "Show resume" },
+          { label: "Tell me about experience", message: "Tell me about experience" },
+          { label: "List projects", message: "List projects" },
+          { label: "What are his skills?", message: "What are his skills?" },
+          { label: "Contact information", message: "Contact information", variant: "secondary" },
+        ],
+      },
     },
   ]);
-
-
-  // -----------------------------------------
-  // CHAT LOADING
-  // -----------------------------------------
-
-  const [isLoading, setIsLoading] =
-    useState(false);
-
-
-  // -----------------------------------------
-  // VOICE STATE
-  //
-  // idle
-  // listening
-  // thinking
-  // speaking
-  // -----------------------------------------
-
-  const [voiceState, setVoiceState] =
-    useState("idle");
-
-
-  // -----------------------------------------
-  // Used to restart microphone automatically
-  // after NUTU finishes speaking
-  // -----------------------------------------
-
-  const [voiceRestart, setVoiceRestart] =
-    useState(0);
-
-
-  // -----------------------------------------
-  // APP STARTUP LOADER
-  // -----------------------------------------
+  const [isLoading, setIsLoading] = useState(false);
+  const [voiceState, setVoiceState] = useState("idle");
+  const [voiceRestart, setVoiceRestart] = useState(0);
 
   useEffect(() => {
-
-    const timer = setTimeout(() => {
-
-      setAppLoading(false);
-
-    }, 1800);
-
-
-    return () => {
-
-      clearTimeout(timer);
-
-    };
-
+    const timer = setTimeout(() => setAppLoading(false), 1800);
+    return () => clearTimeout(timer);
   }, []);
 
-
-  // -----------------------------------------
-  // SEND MESSAGE
-  // -----------------------------------------
-
-  const handleSend = async (
-    message,
-    isVoice = false
-  ) => {
-
-    if (!message.trim() || isLoading) {
-      return;
-    }
-
-
-    // ---------------------------------------
-    // USER MESSAGE
-    // ---------------------------------------
-
-    const userMessage = {
-      role: "user",
-      content: message,
-    };
-
+  const handleSend = async (message, isVoice = false) => {
+    if (!message.trim() || isLoading) return;
 
     setMessages((previousMessages) => [
       ...previousMessages,
-      userMessage,
+      { role: "user", content: message },
     ]);
-
-
-    // ---------------------------------------
-    // START LOADING
-    // ---------------------------------------
-
     setIsLoading(true);
 
-
-    if (isVoice) {
-
-      setVoiceState("thinking");
-
-    }
-
+    if (isVoice) setVoiceState("thinking");
 
     try {
-
-      // -------------------------------------
-      // SEND MESSAGE TO FASTAPI
-      // -------------------------------------
-
-      const response =
-        await sendChatMessage(message);
-
-
-      // -------------------------------------
-      // NUTU RESPONSE
-      // -------------------------------------
-
-      const assistantMessage = {
-        role: "assistant",
-        content: response.answer,
-        type: response.type,
-        action: response.action,
-      };
-
-
+      const response = await sendChatMessage(message);
       setMessages((previousMessages) => [
         ...previousMessages,
-        assistantMessage,
+        {
+          role: "assistant",
+          content: response.answer,
+          type: response.type,
+          action: response.action,
+        },
       ]);
-
-
-      // -------------------------------------
-      // VOICE RESPONSE
-      // -------------------------------------
 
       if (isVoice && response.answer) {
-
         setVoiceState("speaking");
-
-
-        speakText(
-          response.answer,
-
-          () => {
-
-            // NUTU finished speaking
-            // Start listening again
-
-            setVoiceState("listening");
-
-
-            setVoiceRestart(
-              (previous) =>
-                previous + 1
-            );
-
-          }
-        );
-
+        speakText(response.answer, () => {
+          setVoiceState("listening");
+          setVoiceRestart((previous) => previous + 1);
+        });
       }
-
-
     } catch (error) {
-
       console.error(error);
-
-
-      // -------------------------------------
-      // ERROR MESSAGE
-      // -------------------------------------
-
-      const errorMessage = {
-        role: "assistant",
-        content:
-          "Sorry, I'm having trouble connecting right now. Please try again.",
-        type: "error",
-      };
-
-
       setMessages((previousMessages) => [
         ...previousMessages,
-        errorMessage,
+        {
+          role: "assistant",
+          content: "Sorry, I'm having trouble connecting right now. Please try again.",
+          type: "error",
+        },
       ]);
 
-
-      // -------------------------------------
-      // SPEAK ERROR
-      // -------------------------------------
-
       if (isVoice) {
-
         setVoiceState("speaking");
-
-
-        speakText(
-          "Sorry, I'm having trouble connecting right now.",
-
-          () => {
-
-            setVoiceState("listening");
-
-
-            setVoiceRestart(
-              (previous) =>
-                previous + 1
-            );
-
-          }
-        );
-
+        speakText("Sorry, I'm having trouble connecting right now.", () => {
+          setVoiceState("listening");
+          setVoiceRestart((previous) => previous + 1);
+        });
       }
-
-
     } finally {
-
       setIsLoading(false);
-
     }
-
   };
-
-
-  // -----------------------------------------
-  // END VOICE SESSION
-  // -----------------------------------------
 
   const handleEndVoice = () => {
-
     stopSpeaking();
-
     setVoiceState("idle");
-
   };
 
-
-  // -----------------------------------------
-  // APP LOADING SCREEN
-  // -----------------------------------------
-
-  if (appLoading) {
-
-    return <AppLoader />;
-
-  }
-
-
-  // -----------------------------------------
-  // MAIN APP
-  // -----------------------------------------
+  if (appLoading) return <AppLoader />;
 
   return (
-
     <div className="flex h-screen flex-col bg-slate-950 text-white">
-
       <Header />
-
-
       <ChatWindow
         messages={messages}
         isLoading={isLoading}
+        onQuickReply={(message) => handleSend(message)}
       />
-
-
       <ChatInput
         onSend={handleSend}
         isLoading={isLoading}
@@ -300,11 +110,8 @@ function App() {
         voiceRestart={voiceRestart}
         onEndVoice={handleEndVoice}
       />
-
     </div>
-
   );
-
 }
 
 

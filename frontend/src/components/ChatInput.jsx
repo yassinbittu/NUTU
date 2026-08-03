@@ -49,6 +49,7 @@ function ChatInput({
       return;
     }
 
+    // default: normal chat send
     onSend(message.trim(), false);
 
     setMessage("");

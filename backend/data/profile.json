@@ -1,7 +1,29 @@
 {
   "name": "Yassin Mohammed",
   "location": "Warangal, India",
+  "date_of_birth": "2003-03-12",
+  "nationality": "Indian",
   "professional_title": "Python Full Stack Developer | AI Developer",
+  "current_role": "Python Full Stack Developer and AI Developer",
+  "expertise": [
+    "RAG",
+    "LLM integration",
+    "FastAPI",
+    "React.js",
+    "Sentence Transformers",
+    "Embeddings",
+    "NLP",
+    "OCR",
+    "REST APIs",
+    "PostgreSQL"
+  ],
   "summary": "Python Full Stack Developer and AI Developer with experience building scalable full-stack and AI-powered applications using Python, FastAPI, React.js, PostgreSQL and REST APIs. Experienced in LLM integration, RAG, Prompt Engineering, NLP, OCR, Sentence Transformers, Embeddings and Semantic Search. Developed AI-focused projects including ResumeShort AI for intelligent resume screening and candidate shortlisting, Resume AI for AI-powered resume optimization, and a Machine Learning based Diabetes Prediction System with OCR integration. Currently building NUTU, a RAG-based personal AI assistant that enables users to learn about Mohammed Yassin's professional background through text and voice conversations.",
+  "career_goals": "Build intelligent AI assistants and scalable applications that help people access knowledge naturally.",
+  "languages": [
+    "English",
+    "Hindi",
+    "Telugu"
+  ],
+  "phone": "8179456318",
   "email": "iamyassin25@gmail.com"
 }

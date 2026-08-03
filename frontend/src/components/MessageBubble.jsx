@@ -6,16 +6,15 @@ function MessageBubble({
   content,
   type,
   action,
+  onQuickReply = () => {},
 }) {
   const isUser = role === "user";
-
-
-  // Create full resume URL only for resume responses
   const resumeUrl =
     type === "resume" && action?.url
       ? getFileUrl(action.url)
       : null;
 
+  const quickReplies = action?.options || action?.suggestions || [];
 
   return (
     <div
@@ -23,24 +22,17 @@ function MessageBubble({
         isUser ? "justify-end" : "justify-start"
       }`}
     >
-
-      {/* NUTU Avatar */}
       {!isUser && (
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white font-bold text-slate-950">
           N
         </div>
       )}
 
-
       <div className={isUser ? "text-right" : ""}>
-
-        {/* Sender Name */}
         <p className="mb-1 text-xs font-semibold text-slate-400">
           {isUser ? "You" : "NUTU"}
         </p>
 
-
-        {/* Message Bubble */}
         <div
           className={`max-w-xl rounded-2xl px-4 py-3 text-left text-sm leading-6 ${
             isUser
@@ -48,18 +40,10 @@ function MessageBubble({
               : "rounded-tl-sm bg-slate-800 text-slate-100"
           }`}
         >
+          <p className="whitespace-pre-wrap">{content}</p>
 
-          {/* Message Text */}
-          <p>
-            {content}
-          </p>
-
-
-          {/* Resume Actions */}
           {resumeUrl && (
             <div className="mt-4 flex flex-wrap gap-3">
-
-              {/* View Resume */}
               <a
                 href={resumeUrl}
                 target="_blank"
@@ -68,9 +52,6 @@ function MessageBubble({
               >
                 View Resume
               </a>
-
-
-              {/* Download Resume */}
               <a
                 href={resumeUrl}
                 download="Yassin_Mohammed_Resume.pdf"
@@ -78,14 +59,29 @@ function MessageBubble({
               >
                 Download Resume
               </a>
-
             </div>
           )}
 
+          {quickReplies.length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {quickReplies.map((option) => (
+                <button
+                  key={`${option.label}-${option.message}`}
+                  type="button"
+                  onClick={() => onQuickReply(option.message)}
+                  className={`rounded-lg px-4 py-2 text-xs font-semibold transition ${
+                    option.variant === "secondary"
+                      ? "border border-slate-600 text-white hover:bg-slate-700"
+                      : "bg-white text-slate-950 hover:bg-slate-200"
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
-
       </div>
-
     </div>
   );
 }

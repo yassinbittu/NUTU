@@ -5,6 +5,7 @@ import MessageBubble from "./MessageBubble";
 function ChatWindow({
   messages,
   isLoading,
+  onQuickReply = () => {},
 }) {
 
   const messagesEndRef = useRef(null);
@@ -34,6 +35,7 @@ function ChatWindow({
             content={message.content}
             type={message.type}
             action={message.action}
+            onQuickReply={onQuickReply}
           />
 
         ))}
@@ -63,7 +65,6 @@ function ChatWindow({
           </div>
 
         )}
-
 
         {/* Invisible element used for auto-scroll */}
         <div ref={messagesEndRef} />
