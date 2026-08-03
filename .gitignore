@@ -13,7 +13,7 @@ frontend/node_modules/
 frontend/dist/
 
 # Vector Store
-backend/vector_store/
+# backend/vector_store/
 
 # IDE
 .vscode/
@@ -21,3 +21,4 @@ backend/vector_store/
 # OS
 .DS_Store
 Thumbs.db
+
