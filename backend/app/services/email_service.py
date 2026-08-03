@@ -12,18 +12,35 @@ class EmailService:
 
     def __init__(self):
 
-        self.provider = settings.EMAIL_PROVIDER
+        self.provider = settings.EMAIL_PROVIDER.lower()
 
+        print("========== EMAIL PROVIDER ==========")
+        print("Provider:", self.provider)
+        print("====================================")
+
+        # -----------------------------
+        # RESEND
+        # -----------------------------
         if self.provider == "resend":
-            if not settings.RESEND_API_KEY or not settings.MAIL_FROM:
+
+            if not settings.RESEND_API_KEY:
                 raise ValueError(
-                    "RESEND_API_KEY and MAIL_FROM must be set when EMAIL_PROVIDER is resend."
+                    "RESEND_API_KEY is missing."
                 )
+
+            if not settings.MAIL_FROM:
+                raise ValueError(
+                    "MAIL_FROM is missing."
+                )
+
             return
 
+        # -----------------------------
+        # SMTP
+        # -----------------------------
         if not settings.MAIL_USERNAME or not settings.MAIL_PASSWORD:
             raise ValueError(
-                "MAIL_USERNAME and MAIL_PASSWORD must be set in the environment."
+                "MAIL_USERNAME and MAIL_PASSWORD must be set."
             )
 
         self.smtp_server = settings.MAIL_SMTP_SERVER
@@ -31,14 +48,16 @@ class EmailService:
         self.username = settings.MAIL_USERNAME
         self.password = settings.MAIL_PASSWORD
 
-        print("========== EMAIL CONFIG ==========")
-        print("Provider:", self.provider)
+        print("========== SMTP CONFIG ==========")
         print("SMTP Server:", self.smtp_server)
         print("SMTP Port:", self.smtp_port)
         print("Username:", self.username)
         print("Password Length:", len(self.password))
-        print("==================================")
+        print("=================================")
 
+    # --------------------------------------------------
+    # SEND EMAIL
+    # --------------------------------------------------
 
     def send_email(
         self,
@@ -49,6 +68,7 @@ class EmailService:
     ) -> None:
 
         if self.provider == "resend":
+
             self._send_with_resend(
                 subject=subject,
                 body=body,
@@ -58,6 +78,7 @@ class EmailService:
             return
 
         message = EmailMessage()
+
         message["Subject"] = subject
         message["From"] = self.username
         message["To"] = recipient_email
@@ -75,7 +96,11 @@ class EmailService:
 
             print("Connecting to Gmail SMTP...")
 
-            with smtplib.SMTP(self.smtp_server, self.smtp_port, timeout=30) as smtp:
+            with smtplib.SMTP(
+                self.smtp_server,
+                self.smtp_port,
+                timeout=30
+            ) as smtp:
 
                 smtp.ehlo()
 
@@ -95,14 +120,17 @@ class EmailService:
 
                 print("Email sent successfully!")
 
-        except Exception as e:
+        except Exception as exc:
 
             traceback.print_exc()
 
-            print("EMAIL ERROR:", str(e))
+            print("EMAIL ERROR:", str(exc))
 
             raise
 
+    # --------------------------------------------------
+    # RESEND
+    # --------------------------------------------------
 
     def _send_with_resend(
         self,
@@ -139,12 +167,21 @@ class EmailService:
 
         try:
 
+            print("Sending email via Resend...")
+
             with urlopen(request, timeout=20) as response:
+
+                response_body = response.read().decode("utf-8")
+
+                print("Resend Status:", response.status)
+                print("Resend Response:", response_body)
 
                 if response.status not in (200, 201):
                     raise RuntimeError(
-                        f"Resend returned HTTP {response.status}."
+                        f"Resend returned HTTP {response.status}"
                     )
+
+                print("Email sent successfully using Resend!")
 
         except HTTPError as exc:
 
@@ -153,11 +190,15 @@ class EmailService:
                 errors="replace"
             )
 
+            traceback.print_exc()
+
             raise RuntimeError(
-                f"Resend returned HTTP {exc.code}: {details}"
+                f"Resend HTTP {exc.code}: {details}"
             ) from exc
 
         except URLError as exc:
+
+            traceback.print_exc()
 
             raise RuntimeError(
                 f"Could not reach Resend: {exc.reason}"
