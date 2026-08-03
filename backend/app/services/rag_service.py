@@ -24,15 +24,42 @@ class RAGService:
             path=VECTOR_STORE_DIR
         )
 
-        self.collection = self.client.get_collection(
-            name="nutu_knowledge"
-        )
+        try:
 
-    def search(self, query: str, top_k: int = 3):
+            self.collection = self.client.get_collection(
+                name="nutu_knowledge"
+            )
+
+            print("Loaded existing ChromaDB collection.")
+
+        except Exception:
+
+            print("ChromaDB collection not found.")
+            print("Creating vector database...")
+
+            from scripts.ingest_data import create_vector_store
+
+            create_vector_store()
+
+            self.client = chromadb.PersistentClient(
+                path=VECTOR_STORE_DIR
+            )
+
+            self.collection = self.client.get_collection(
+                name="nutu_knowledge"
+            )
+
+            print("Vector database created successfully.")
+
+
+    def search(
+        self,
+        query: str,
+        top_k: int = 3
+    ):
 
         query_embedding = (
-            embedding_service
-            .create_embedding(query)
+            embedding_service.create_embedding(query)
         )
 
         results = self.collection.query(
