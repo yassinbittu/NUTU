@@ -21,6 +21,9 @@ class Settings:
         "MAIL_SMTP_PORT",
         "587"
     ))
+    EMAIL_PROVIDER = os.getenv("EMAIL_PROVIDER", "smtp").lower()
+    RESEND_API_KEY = os.getenv("RESEND_API_KEY")
+    MAIL_FROM = os.getenv("MAIL_FROM")
 
 
 settings = Settings()

@@ -266,7 +266,7 @@ def chat(request: ChatRequest):
                     "I was not able to send the email right now. "
                     "Please try again later."
                 )
-                print("Email send failure:", exc)
+                print("Email send failure:", repr(exc))
 
             contact_service.reset()
 
