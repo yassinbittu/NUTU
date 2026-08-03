@@ -176,7 +176,11 @@ class ContactService:
         message: str
     ) -> bool:
 
+        print("Checking confirmation:", repr(message))
+
         message = message.lower().strip()
+
+        print("Normalized:", repr(message))
 
         confirmation_words = [
             "yes",
@@ -192,7 +196,11 @@ class ContactService:
             "sure send it"
         ]
 
-        return message in confirmation_words
+        result = message in confirmation_words
+
+        print("Confirmation result:", result)
+
+        return result
 
 
     # -------------------------------------------------

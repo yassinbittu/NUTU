@@ -249,7 +249,15 @@ def chat(request: ChatRequest):
 
     if contact_service.state == "waiting_for_confirmation":
 
+        print("========== CONFIRMATION ==========")
+        print("Message:", message)
+        print("State:", contact_service.state)
+        print("Is confirmation:", contact_service.is_confirmation(message))
+        print("==================================")
+
         if contact_service.is_confirmation(message):
+
+            print("Calling email_service.send_email()")
 
             try:
                 email_service.send_email(
@@ -258,6 +266,9 @@ def chat(request: ChatRequest):
                     visitor_email=contact_service.visitor_email,
                     recipient_email="iamyassin25@gmail.com"
                 )
+
+                print("Email function completed successfully.")
+
 
                 answer = (
                     "Your email has been sent to Yassin at "
