@@ -2,6 +2,9 @@
 // CREATE SPEECH RECOGNITION
 // ---------------------------------------------
 
+export const isSpeechRecognitionSupported = () =>
+  "SpeechRecognition" in window || "webkitSpeechRecognition" in window;
+
 export const createSpeechRecognition = () => {
   const SpeechRecognition =
     window.SpeechRecognition ||
@@ -51,10 +54,14 @@ export const speakText = (
 
   if (!("speechSynthesis" in window)) {
     console.error("Speech synthesis not supported.");
+    onEnd?.();
     return;
   }
 
-  if (!text) return;
+  if (!text) {
+    onEnd?.();
+    return;
+  }
 
   const speak = () => {
 

@@ -14,6 +14,7 @@ import {
 
 import {
   createSpeechRecognition,
+  isSpeechRecognitionSupported,
 } from "../services/voiceService";
 
 
@@ -33,6 +34,7 @@ function ChatInput({
     useState(false);
 
   const recognitionRef = useRef(null);
+  const voiceSupported = isSpeechRecognitionSupported();
 
   // Important:
   // tells callbacks whether voice mode is active
@@ -361,8 +363,12 @@ function ChatInput({
             <button
               type="button"
               onClick={startVoice}
-              disabled={isLoading}
-              title="Talk to NUTU"
+              disabled={isLoading || !voiceSupported}
+              title={
+                voiceSupported
+                  ? "Talk to NUTU"
+                  : "Voice input is not supported by this browser"
+              }
               className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-400 transition hover:bg-slate-800 hover:text-white disabled:opacity-50"
             >
               <Mic size={20} />

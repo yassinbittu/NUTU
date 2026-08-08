@@ -24,6 +24,14 @@ class Settings:
     EMAIL_PROVIDER = os.getenv("EMAIL_PROVIDER", "smtp").lower()
     RESEND_API_KEY = os.getenv("RESEND_API_KEY")
     MAIL_FROM = os.getenv("MAIL_FROM")
+    CORS_ORIGINS = [
+        origin.strip()
+        for origin in os.getenv(
+            "CORS_ORIGINS",
+            "http://localhost:5173,http://127.0.0.1:5173,https://nutu-ai-yassin.vercel.app"
+        ).split(",")
+        if origin.strip()
+    ]
 
 
 settings = Settings()

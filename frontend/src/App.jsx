@@ -70,7 +70,7 @@ function App() {
         ...previousMessages,
         {
           role: "assistant",
-          content: "Sorry, I'm having trouble connecting right now. Please try again.",
+          content: error.message || "Sorry, I'm having trouble connecting right now. Please try again.",
           type: "error",
         },
       ]);
